@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "minaug": {
+      "commandName": "Project",
+      "commandLineArgs": "--verbose"
+    }
+  }
+}
