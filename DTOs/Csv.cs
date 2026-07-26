@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace minaug.DTOs;
+namespace MinAug.DTOs;
 
 internal record Csv
 {

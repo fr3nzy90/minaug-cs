@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using minaug.DTOs;
-using minaug.Extensions;
-using minaug.Services;
-using minaug.Utils;
+using MinAug.DTOs;
+using MinAug.Extensions;
+using MinAug.Services;
+using MinAug.Utils;
 
 ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.Setup());
 ILogger logger = loggerFactory.CreateLogger<Program>();

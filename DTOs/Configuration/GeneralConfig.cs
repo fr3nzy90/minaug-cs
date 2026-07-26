@@ -1,4 +1,4 @@
-﻿namespace minaug.DTOs.Configuration;
+﻿namespace MinAug.DTOs.Configuration;
 
 internal record GeneralConfig
 {

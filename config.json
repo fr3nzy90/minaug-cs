@@ -1,6 +1,6 @@
 {
   "General": {
-    //"ReferenceDate": "1.1.2026",
+    "ReferenceDate": "2026.07.01"
   },
   "InflationData": {
     "CsvFilePath": "data/inflation_sl_2026_06.csv"
@@ -9,17 +9,17 @@
   "AugmentData": {
     "CsvFilePath": "example.csv"
     //"CsvDelimiter": ";"
-    //"DateHeaderKey": "Date",
-    //"AmountHeaderKey": "Amount",
-    //"AmountDecimalPlaces": 2,
-    //"FactorDecimalPlaces": 5,
-    //"AddInflationFactor": true,
-    //"InflationFactorHeaderKey": "Inflation factor",
-    //"AddInflatedAmount": true,
-    //"InflationAdjustedAmountHeaderKey": "Inflated amount",
-    //"AddReverseInflationFactor": true,
-    //"ReverseInflationFactorHeaderKey": "Reverse inflation factor",
-    //"AddReverseInflatedAmount": true,
+    //"DateHeaderKey": "Date"
+    //"AmountHeaderKey": "Amount"
+    //"AmountDecimalPlaces": 2
+    //"FactorDecimalPlaces": 5
+    //"AddInflationFactor": true
+    //"InflationFactorHeaderKey": "Inflation factor"
+    //"AddInflatedAmount": true
+    //"InflationAdjustedAmountHeaderKey": "Inflated amount"
+    //"AddReverseInflationFactor": true
+    //"ReverseInflationFactorHeaderKey": "Reverse inflation factor"
+    //"AddReverseInflatedAmount": true
     //"ReverseInflationAdjustedAmountHeaderKey": "Reverse inflated amount"
   }
 }

@@ -1,4 +1,4 @@
-﻿namespace minaug.Extensions;
+﻿namespace MinAug.Extensions;
 
 internal static class GeneralExtensions
 {

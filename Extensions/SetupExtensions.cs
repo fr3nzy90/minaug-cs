@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using minaug.DTOs.Configuration;
-using minaug.Services;
+using MinAug.DTOs.Configuration;
+using MinAug.Services;
 
-namespace minaug.Extensions;
+namespace MinAug.Extensions;
 
 internal static class SetupExtensions
 {

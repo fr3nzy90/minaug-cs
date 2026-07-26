@@ -5,9 +5,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>minaug</AssemblyName>
-    <RootNamespace>minaug</RootNamespace>
     <Version>1.0.0.0</Version>
+    <AssemblyName>minaug</AssemblyName>
+    <RootNamespace>MinAug</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

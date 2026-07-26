@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using minaug.DTOs;
-using minaug.DTOs.Configuration;
-using minaug.Extensions;
+using MinAug.DTOs;
+using MinAug.DTOs.Configuration;
+using MinAug.Extensions;
 
-namespace minaug.Services;
+namespace MinAug.Services;
 
 internal class DataAugmenterService
 {

@@ -1,6 +1,6 @@
-﻿using minaug.DTOs;
+﻿using MinAug.DTOs;
 
-namespace minaug.Extensions;
+namespace MinAug.Extensions;
 
 internal static class CsvExtensions
 {

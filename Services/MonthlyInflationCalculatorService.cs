@@ -1,16 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using minaug.DTOs;
-using minaug.DTOs.Configuration;
-using minaug.Extensions;
+using MinAug.DTOs;
+using MinAug.DTOs.Configuration;
+using MinAug.Extensions;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace minaug.Services;
+namespace MinAug.Services;
 
 internal class MonthlyInflationCalculatorService
 {
   private readonly ILogger _logger;
-  private readonly IDictionary<(DateTime RangeStart, DateTime RangeEnd), decimal> _aggregatedFactors;
+  private readonly IDictionary<string, decimal> _aggregatedFactors;
 
   public MonthlyInflationCalculatorService(ILogger<MonthlyInflationCalculatorService> logger,
     IOptionsSnapshot<GeneralConfig> generalConfig,
@@ -18,7 +19,7 @@ internal class MonthlyInflationCalculatorService
   {
     _logger = logger;
 
-    IEnumerable<(int Year, int Month, decimal Factor)> data =
+    IEnumerable<(string Date, decimal Factor)> data =
       ReadMonthlyInflationData(inflationDataConfig.Value.CsvFilePath, delimiter: inflationDataConfig.Value.CsvDelimiter);
 
     _aggregatedFactors = CreateMultiplers(data, generalConfig.Value.ReferenceDate);
@@ -26,9 +27,9 @@ internal class MonthlyInflationCalculatorService
 
   public decimal Calculate(DateTime date)
   {
-    (DateTime RangeStart, DateTime RangeEnd) range = GetRange(date.Year, date.Month);
+    string dateKey = GetDateKey(date);
 
-    if (!_aggregatedFactors.TryGetValue(range, out decimal result))
+    if (!_aggregatedFactors.TryGetValue(dateKey, out decimal result))
     {
       _logger.LogError("Given date {date} is out of range", date);
       throw new ArgumentOutOfRangeException(nameof(date));
@@ -37,7 +38,7 @@ internal class MonthlyInflationCalculatorService
     return result;
   }
 
-  private IEnumerable<(int Year, int Month, decimal Factor)> ReadMonthlyInflationData(string filepath, string delimiter)
+  private IEnumerable<(string DateKey, decimal Factor)> ReadMonthlyInflationData(string filepath, string delimiter)
   {
     try
     {
@@ -59,9 +60,7 @@ internal class MonthlyInflationCalculatorService
             throw new ArgumentException(nameof(obj.Name));
           }
 
-          return (int.Parse(obj.Name.Substring(0, 4)),
-            int.Parse(obj.Name.Substring(5, 2)),
-            obj.Index / 100);
+          return (obj.Name, obj.Index / 100);
         });
     }
     catch (Exception e)
@@ -71,47 +70,53 @@ internal class MonthlyInflationCalculatorService
     }
   }
 
-  private IDictionary<(DateTime RangeStart, DateTime RangeEnd), decimal> CreateMultiplers(
-    IEnumerable<(int Year, int Month, decimal Factor)> data, DateTime reference)
+  private IDictionary<string, decimal> CreateMultiplers(IEnumerable<(string DateKey, decimal Factor)> data, DateTime reference)
   {
     ArgumentNullException.ThrowIfNull(data);
 
+    string referenceDateKey = GetDateKey(reference);
+
     // filter
-    List<(int Year, int Month, decimal Factor)> filteredInflationDataEntries = data
-      .Where(obj => !(obj.Year, obj.Month).Equals((reference.Year, reference.Month)) &&
-        (obj.Year, obj.Month).CompareTo((reference.Year, reference.Month)) < 1)
-      .OrderByDescending(obj => (obj.Year, obj.Month))
+    List<(string DateKey, decimal Factor)> filteredInflationDataEntries = data
+      .Where(obj => !obj.DateKey.Equals(referenceDateKey) && obj.DateKey.CompareTo(referenceDateKey) < 1)
+      .OrderByDescending(obj => obj.DateKey)
       .ToList();
 
     // validate
-    (int Year, int Month) next = (reference.Year, reference.Month - 1);
+    string nextDateKey = GetDateKey(new DateTime(reference.Year, reference.Month, 1).AddMonths(-1));
 
     filteredInflationDataEntries
       .ForEach(entry =>
       {
-        if (next != (entry.Year, entry.Month))
+        if (nextDateKey != entry.DateKey)
         {
-          _logger.LogError("Missing inflation data for {name1}={value1} {name2}={value2}", nameof(next.Year), next.Year,
-            nameof(next.Month), next.Month);
-          throw new InvalidDataException($"Missing inflation data for {nameof(next.Year)}={next.Year} {nameof(next.Month)}={next.Month}");
+          _logger.LogError("Missing inflation data for {dateKey}", nextDateKey);
+          throw new InvalidDataException($"Missing inflation data for {nextDateKey}");
         }
-        next = entry.Month == 1 ? (entry.Year - 1, 12) : (entry.Year, entry.Month - 1);
+
+        nextDateKey = GetDateKey(ParseDateKey(nextDateKey).AddMonths(-1));
       });
 
     // prepare
     decimal multiplier = 1.0m;
 
     return Array
-      .Empty<((DateTime, DateTime), decimal)>()
-      .Concat([(GetRange(reference.Year, reference.Month), multiplier)])
-      .Concat(filteredInflationDataEntries.Select(obj => (GetRange(obj.Year, obj.Month), multiplier *= obj.Factor)))
+      .Empty<(string, decimal)>()
+      .Concat([(GetDateKey(reference), multiplier)])
+      .Concat(filteredInflationDataEntries.Select(obj => (obj.DateKey, multiplier *= obj.Factor)))
       .ToDictionary(obj => obj.Item1, obj => obj.Item2);
   }
 
-  private static (DateTime RangeStart, DateTime RangeEnd) GetRange(int year, int month)
-  {
-    (int endYear, int endMonth) = month == 12 ? (year + 1, 1) : (year, month + 1);
+  private static string GetDateKey(DateTime date) =>
+    date.ToString("yyyy\\MMM");
 
-    return (new DateTime(year, month, 1), new DateTime(endYear, endMonth, 1));
+  private static DateTime ParseDateKey(string input)
+  {
+    if (!DateTime.TryParseExact(input, "yyyy\\MMM", null, DateTimeStyles.None, out DateTime result))
+    {
+      throw new FormatException("Invalid date key format");
+    }
+
+    return result;
   }
 }

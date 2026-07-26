@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace minaug.DTOs;
+namespace MinAug.DTOs;
 
 internal record CommandLineArguments
 {

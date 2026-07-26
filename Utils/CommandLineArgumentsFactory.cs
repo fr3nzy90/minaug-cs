@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using minaug.DTOs;
+using MinAug.DTOs;
 using System.CommandLine;
 using System.Reflection;
 
-namespace minaug.Utils;
+namespace MinAug.Utils;
 
 internal static class CommandLineArgumentsFactory
 {
