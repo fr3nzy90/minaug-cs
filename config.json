@@ -1,9 +1,9 @@
 {
   "General": {
-    "ReferenceDate": "2026.07.01"
+    "ReferenceDate": "2026.08.01"
   },
   "InflationData": {
-    "CsvFilePath": "data/inflation_sl_2026_06.csv"
+    "CsvFilePath": "data/inflation_sl_2026_07.csv"
     //"CsvDelimiter": ";"
   },
   "AugmentData": {
