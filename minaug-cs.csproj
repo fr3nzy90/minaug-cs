@@ -24,7 +24,7 @@
     <None Update="example.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="data\inflation_sl_2026_08.csv">
+    <None Update="data\inflation_sl_2026_09.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
